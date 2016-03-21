@@ -1,0 +1,88 @@
+### Tesina Ricerca Operativa 
+### Andrea Incerti Delmonte 239629
+
+### SETS 
+
+set INTERNAL_SENIOR_STAFF :=  s1;
+set INTERNAL_JUNIOR_STAFF :=  j1 j2;
+set CONSULTANTS := c1 c2;
+
+set TASKS :=  t1 t2 t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 t13 t14 t15;
+set INTERNAL_STAFF_TASKS :=  ist1 ist2 ist3 ist4 ist5 ist6;
+set SENIOR_AND_CONSULTANTS_TASKS :=  sct1 sct2 sct3 sct4;
+
+
+### PARAMETERS 
+
+param sprint_length := 40;
+param max_internal_hpc_hours_per_senior = 5;
+param min_internal_hours_per_junior = 10;
+
+# Efficiencies
+param iss_efficiency :=
+s1 4;
+
+param ijs_efficiency :=
+j1 1
+j2 1;
+
+param c_efficiency :=
+c1 2
+c2 2;
+
+# Hourly costs
+param iss_hourly_cost := 
+s1 4;
+
+# Hourly costs
+param ijs_hourly_cost := 
+j1 2
+j2 2;
+
+param c_hourly_cost := 
+c1 6
+c2 6;
+
+
+# Tasks effort
+param task_effort := 
+t1 10
+t2 10
+t3 10
+t4 10 
+t5 10
+t6 10
+t7 10
+t8 10 
+t9 10
+t10 10
+t11 10
+t12 10
+t13 10
+t14 10
+t15 10;
+
+param is_task_effort := 
+ist1 10
+ist2 10
+ist3 20
+ist4 20
+ist5 20
+ist6 20;
+
+param sc_task_effort := 
+sct1 20 
+sct2 40
+sct3 40
+sct4 40
+sct5 60;
+
+# Task coupling
+param is_task_coupling :
+	ist1 ist2 ist3 ist4 ist5 ist6:=
+ist1 0	1	0	0	0	0
+ist2 1	0	0	0	0	0
+ist3 0	0	0	0	1	0
+ist4 0	0	0	0	0	1
+ist5 0	0	1	0	0	0
+ist6 0	0	0	1	0	0

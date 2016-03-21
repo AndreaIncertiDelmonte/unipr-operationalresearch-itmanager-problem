@@ -1,0 +1,140 @@
+### Tesina Ricerca Operativa 
+### Andrea Incerti Delmonte 239629
+
+reset;
+#option solver "./cplex";
+option solver "./cbc";
+model TesinaRicercaOperativa/itManager.mod;
+data TesinaRicercaOperativa/itManager.dat;
+solve;
+display sprint_cost;
+display iss_t_assignments;
+display ijs_t_assignments;
+display c_t_assignments;
+display c_sct_assignments;
+display iss_sct_assignments;
+
+
+#
+# Display internal staff assignments
+#
+
+printf "INTERNAL STAFF ASSIGNMENTS\n\n";
+
+# Senior internal staff
+# Task assignments
+printf "Senior: task \t effort  duration \n";
+for {iss in INTERNAL_SENIOR_STAFF} {	
+	for {t in TASKS} {			
+		if iss_t_assignments[iss,t] > 0 then {			
+			printf "%s: \t %s \t %s \t %s\n", iss, t, task_effort[t], task_effort[t]/iss_efficiency[iss];			
+		}
+	}
+	printf "Total work of %s on task: %s\n\n", iss, sum{t in TASKS} iss_t_assignments[iss,t]*task_effort[t]/iss_efficiency[iss];
+}
+
+# Senior internal staff
+# Internal task assignments
+printf "Senior: internal task \t effort  duration \n";
+for {iss in INTERNAL_SENIOR_STAFF} {	
+	for {ist in INTERNAL_STAFF_TASKS} {			
+		if iss_ist_assignments[iss,ist] > 0 then {			
+			printf "%s: \t %s \t %s \t %s\n", iss, ist, is_task_effort[ist], is_task_effort[ist]/iss_efficiency[iss];
+		}
+	}
+	printf "Total work of %s on internal task: %s\n\n", iss, sum{ist in INTERNAL_STAFF_TASKS} iss_ist_assignments[iss,ist]*is_task_effort[ist]/iss_efficiency[iss];
+}
+
+# Senior internal staff
+# Seniorn and consultants task assignments
+printf "Senior: s&c task effort  duration \n";
+for {iss in INTERNAL_SENIOR_STAFF} {	
+	for {sct in SENIOR_AND_CONSULTANTS_TASKS} {			
+		if iss_sct_assignments[iss,sct] > 0 then {			
+			printf "%s: \t %s \t %s \t %s\n", iss, sct, sc_task_effort[sct], sc_task_effort[sct]/iss_efficiency[iss];
+		}
+	}
+	printf "Total work of %s on senior and consultants task: %s\n\n", iss, sum{sct in SENIOR_AND_CONSULTANTS_TASKS} iss_sct_assignments[iss,sct]*sc_task_effort[sct]/iss_efficiency[iss];
+}
+
+# Junior internal staff
+# Task assignments
+printf "Junior: task \t effort  duration \n";
+for {ijs in INTERNAL_JUNIOR_STAFF} {	
+	for {t in TASKS} {			
+		if ijs_t_assignments[ijs,t] > 0 then {			
+			printf "%s: \t %s \t %s \t %s\n", ijs, t, task_effort[t], task_effort[t]/ijs_efficiency[ijs];
+		}
+	}
+	printf "Total work if %s on task: %s\n\n", ijs, sum{t in TASKS} ijs_t_assignments[ijs,t]*task_effort[t]/ijs_efficiency[ijs];
+}
+
+# Junior internal staff
+# Internal task assignments
+printf "Junior: internal task \t effort  duration \n";
+for {ijs in INTERNAL_JUNIOR_STAFF} {	
+	for {ist in INTERNAL_STAFF_TASKS} {			
+		if ijs_ist_assignments[ijs,ist] > 0 then {			
+			printf "%s: \t %s \t %s \t %s\n", ijs, ist, is_task_effort[ist], is_task_effort[ist]/ijs_efficiency[ijs];
+		}
+	}
+	printf "Total work of %s on internal task: %s\n\n", ijs, sum{ist in INTERNAL_STAFF_TASKS} ijs_ist_assignments[ijs,ist]*is_task_effort[ist]/ijs_efficiency[ijs];
+}
+
+printf "CONSULTANTS ASSIGNMENTS\n\n";
+
+# Consultants
+# Task assignments
+printf "Consultants:\ttask effort  duration \n";
+for {c in CONSULTANTS} {	
+	for {t in TASKS} {			
+		if c_t_assignments[c,t] > 0 then {			
+			printf "%s:\t\t%s \t %s \t %s\n", c, t, task_effort[t], task_effort[t]/c_efficiency[c];
+		}
+	}
+	printf "Total work of %s on task: %s\n\n", c, sum{t in TASKS} c_t_assignments[c,t]*task_effort[t]/c_efficiency[c];
+}
+
+# Consultants
+# Seniorn and consultants task assignments
+printf "Consultants:\ts&c task effort  duration \n";
+for {c in CONSULTANTS} {	
+	for {sct in SENIOR_AND_CONSULTANTS_TASKS} {			
+		if c_sct_assignments[c,sct] > 0 then {			
+			printf "%s:\t\t%s \t%s \t %s\n", c, sct, sc_task_effort[sct], sc_task_effort[sct]/c_efficiency[c];
+		}
+	}
+	printf "Total work of %s on senior and consultants task: %s\n\n", c, sum{sct in SENIOR_AND_CONSULTANTS_TASKS} c_sct_assignments[c,sct]*sc_task_effort[sct]/c_efficiency[c];
+}
+
+
+printf "SENIOR INTERNAL STAFF RECAP\n\n";
+for {iss in INTERNAL_SENIOR_STAFF} {	
+	printf "Total work of %s on task: %s\n", iss, sum{t in TASKS} iss_t_assignments[iss,t]*task_effort[t]/iss_efficiency[iss];
+	printf "Total work of %s on internal task: %s\n", iss, sum{ist in INTERNAL_STAFF_TASKS} iss_ist_assignments[iss,ist]*is_task_effort[ist]/iss_efficiency[iss];
+	printf "Total work of %s on senior and consultants task: %s\n", iss, sum{sct in SENIOR_AND_CONSULTANTS_TASKS} iss_sct_assignments[iss,sct]*sc_task_effort[sct]/iss_efficiency[iss];
+	printf "Total work of %s on %s\n", iss, sum{t in TASKS} iss_t_assignments[iss,t]*task_effort[t]/iss_efficiency[iss] + sum{ist in INTERNAL_STAFF_TASKS} iss_ist_assignments[iss,ist]*is_task_effort[ist]/iss_efficiency[iss] + sum{sct in SENIOR_AND_CONSULTANTS_TASKS} iss_sct_assignments[iss,sct]*sc_task_effort[sct]/iss_efficiency[iss];
+	printf "Employment percentage of %s is %s\% \n\n", iss, 100*(sum{t in TASKS} iss_t_assignments[iss,t]*task_effort[t]/iss_efficiency[iss] + sum{ist in INTERNAL_STAFF_TASKS} iss_ist_assignments[iss,ist]*is_task_effort[ist]/iss_efficiency[iss] + sum{sct in SENIOR_AND_CONSULTANTS_TASKS} iss_sct_assignments[iss,sct]*sc_task_effort[sct]/iss_efficiency[iss]) / sprint_length;
+	
+}
+
+printf "JUNIOR INTERNAL STAFF RECAP\n\n";
+for {ijs in INTERNAL_JUNIOR_STAFF} {	
+	printf "Total work if %s on task: %s\n", ijs, sum{t in TASKS} ijs_t_assignments[ijs,t]*task_effort[t]/ijs_efficiency[ijs];
+	printf "Total work of %s on internal task: %s\n", ijs, sum{ist in INTERNAL_STAFF_TASKS} ijs_ist_assignments[ijs,ist]*is_task_effort[ist]/ijs_efficiency[ijs];
+	printf "Total work if %s on task: %s\n", ijs, sum{t in TASKS} ijs_t_assignments[ijs,t]*task_effort[t]/ijs_efficiency[ijs] + sum{ist in INTERNAL_STAFF_TASKS} ijs_ist_assignments[ijs,ist]*is_task_effort[ist]/ijs_efficiency[ijs];
+	printf "Employment percentage of %s is %s\% \n\n", ijs, 100*(sum{t in TASKS} ijs_t_assignments[ijs,t]*task_effort[t]/ijs_efficiency[ijs] + sum{ist in INTERNAL_STAFF_TASKS} ijs_ist_assignments[ijs,ist]*is_task_effort[ist]/ijs_efficiency[ijs]) / sprint_length;
+}
+
+printf "CONSULTANTS RECAP\n\n";
+for {c in CONSULTANTS} {		
+	printf "Total work of %s on task: %s\n", c, sum{t in TASKS} c_t_assignments[c,t]*task_effort[t]/c_efficiency[c];
+	printf "Total work of %s on senior and consultants task: %s\n", c, sum{sct in SENIOR_AND_CONSULTANTS_TASKS} c_sct_assignments[c,sct]*sc_task_effort[sct]/c_efficiency[c];
+	printf "Total work of %s: %s\n\n", c, sum{t in TASKS} c_t_assignments[c,t]*task_effort[t]/c_efficiency[c] + sum{sct in SENIOR_AND_CONSULTANTS_TASKS} c_sct_assignments[c,sct]*sc_task_effort[sct]/c_efficiency[c];
+	printf "Employment percentage of %s is %s\% \n\n", c, 100*(sum{t in TASKS} c_t_assignments[c,t]*task_effort[t]/c_efficiency[c] + sum{sct in SENIOR_AND_CONSULTANTS_TASKS} c_sct_assignments[c,sct]*sc_task_effort[sct]/c_efficiency[c]) / sprint_length;
+}
+
+printf "TOTAL SPRINT COST = %s\n\n", sprint_cost;
+
+#Launch command
+#include TesinaRicercaOperativa/itManager.run;
